@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BlogTalks": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
