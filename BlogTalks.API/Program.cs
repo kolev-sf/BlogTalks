@@ -1,4 +1,6 @@
-using BlogTalks.Application.BlogPost.Queries;
+using BlogTalks.API;
+using BlogTalks.Application;
+using BlogTalks.Infrastructure; // Ensure this namespace is included
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,10 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
 builder.Services.AddOpenApi();
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetAllRequest).Assembly));
+builder.Services
+        .AddPresentation()
+        .AddApplication()
+        .AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

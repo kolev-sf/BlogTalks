@@ -8,6 +8,8 @@ public class Comment : IEntity
     public string Text { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public int CreatedBy { get; set; }
+
+    // Navigation
     public int BlogPostId { get; set; }
     public BlogPost BlogPost { get; set; } = new BlogPost();
 }

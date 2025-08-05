@@ -10,5 +10,8 @@ public class BlogPost : IEntity
     public List<string> Tags { get; set; } = new List<string>();
     public DateTime CreatedAt { get; set; }
     public int CreatedBy { get; set; }
+
+
+    // Navigation
     public List<Comment> Comments { get; set; } = new List<Comment>();
 }

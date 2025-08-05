@@ -1,40 +1,45 @@
 ﻿using BlogTalks.Application.Comment.Queries;
+using BlogTalks.Domain.Repositories;
 using MediatR;
 
 namespace BlogTalks.Application.BlogPost.Queries;
 
 public class GetByBlogPostIdHandler : IRequestHandler<GetByBlogPostIdRequest, List<GetByBlogPostIdResponse>>
 {
-    public GetByBlogPostIdHandler()
+    private readonly ICommentRepository _commentRepository;
+    private readonly IBlogPostRepository _blogPostRepository;
+
+    public GetByBlogPostIdHandler(ICommentRepository commentRepository, IBlogPostRepository blogPostRepository)
     {
+        _commentRepository = commentRepository;
+        _blogPostRepository = blogPostRepository;
     }
 
     public async Task<List<GetByBlogPostIdResponse>> Handle(GetByBlogPostIdRequest request, CancellationToken cancellationToken)
     {
         // get list of BlogPostEntities
-        //.. (this part is usually done by a repository or a service)
+        var blogPost = _blogPostRepository.GetById(request.blogPostId);
+        if (blogPost == null)
+            return null;
+
+
+        var list = _commentRepository.GetCommentsByBlogPostId(request.blogPostId);
 
         // map list to GetAllResponse
-        var list = new List<GetByBlogPostIdResponse>
+        var getAllResponseList = new List<GetByBlogPostIdResponse>();
+        foreach (var item in list)
         {
-            new GetByBlogPostIdResponse
+            var response = new GetByBlogPostIdResponse
             {
-                Id = 1,
-                Text = "This is a sample blog post text.",
-                CreatorName = "Mile Milevski",
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = 1 // Example user ID
-            },
-            new GetByBlogPostIdResponse
-            {
-                Id = 2,
-                Text = "This is another sample blog post text.",
-                CreatorName = "Dule Dulevski",
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = 1 // Example user ID
-            }
-        };
+                Id = item.Id,
+                Text = item.Text,
+                CreatorName = "XXX", // not implemted yet, TODO
+                CreatedAt = item.CreatedAt,
+                CreatedBy = item.CreatedBy,
+            };
+            getAllResponseList.Add(response);
+        }
 
-        return list;
+        return getAllResponseList;
     }
 }

@@ -1,48 +1,37 @@
-﻿using MediatR;
+﻿using BlogTalks.Domain.Repositories;
+using MediatR;
 
 namespace BlogTalks.Application.BlogPost.Queries;
 
 public class GetAllHandler : IRequestHandler<GetAllRequest, List<GetAllResponse>>
 {
-    public GetAllHandler()
+    private readonly IBlogPostRepository _blogPostRepository;
+
+    public GetAllHandler(IBlogPostRepository blogPostRepository)
     {
+        _blogPostRepository = blogPostRepository;
     }
 
     public async Task<List<GetAllResponse>> Handle(GetAllRequest request, CancellationToken cancellationToken)
     {
         // get list of BlogPostEntities
-        //.. (this part is usually done by a repository or a service)
+        var list = _blogPostRepository.GetAll();
 
         // map list to GetAllResponse
-        var list = new List<GetAllResponse>
+        var getAllResponseList = new List<GetAllResponse>();
+        foreach (var item in list)
         {
-            new GetAllResponse
+            var response = new GetAllResponse
             {
-                Id = 1,
-                Title = "Sample Blog Post",
-                Text = "This is a sample blog post text.",
-                CreatorName = "Mile Milevski",
-                Tags = new List<string>
-                {
-                    "Tag1",
-                    "Tag2"
-                }
-            },
-            new GetAllResponse
-            {
-                Id = 2,
-                Title = "Another Blog Post",
-                Text = "This is another sample blog post text.",
-                CreatorName = "Dule Dulevski",
-                Tags = new List<string>
-                {
-                    "Tag3",
-                    "Tag4"
-                }
-            }
+                Id = item.Id,
+                Title = item.Title,
+                Text = item.Text,
+                Tags = item.Tags,
+                CreatorName = "XXX" // not implemted yet, TODO
+            };
+            getAllResponseList.Add(response);
+        }
 
-        };
-
-        return list;
+        return getAllResponseList;
     }
-}
+} 
