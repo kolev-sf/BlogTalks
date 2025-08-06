@@ -1,6 +1,5 @@
-﻿using BlogTalks.Application.Comment.Queries;
-using MediatR;
+﻿using MediatR;
 
-namespace BlogTalks.Application.BlogPost.Queries;
+namespace BlogTalks.Application.Comment.Queries;
 
-public record GetByBlogPostIdRequest(int blogPostId) : IRequest<List<GetByBlogPostIdResponse>>;
+public record GetByBlogPostIdRequest(int BlogPostId) : IRequest<List<GetByBlogPostIdResponse>>;

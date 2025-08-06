@@ -47,7 +47,7 @@ namespace BlogTalks.API.Controllers
             {
                 return NotFound();
             }
-            return Ok(response.Id);
+            return Ok(response);
         }
 
         // PUT api/<BlogPosts>/5

@@ -1,4 +1,4 @@
-﻿using BlogTalks.Application.BlogPost.Queries;
+﻿using BlogTalks.Application.Comment.Queries;
 using BlogTalks.Application.Comment.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +19,12 @@ namespace BlogTalks.API.Controllers
         }
 
         // GET: api/<Comments>
-        [HttpGet]
-        public ActionResult<List<GetAllResponse>> Get()
-        {
-            var list = _mediator.Send(new GetAllRequest());
-            return Ok(list);
-        }
+        //[HttpGet]
+        //public ActionResult<List<GetAllResponse>> Get()
+        //{
+        //    var list = _mediator.Send(new GetAllRequest());
+        //    return Ok(list);
+        //}
 
         // GET api/<Comments>/5
         [HttpGet("{id}")]
@@ -47,7 +47,7 @@ namespace BlogTalks.API.Controllers
             {
                 return NotFound();
             }
-            return Ok(response.Id);
+            return Ok(response);
         }
 
         // PUT api/<Comments>/5
@@ -60,6 +60,15 @@ namespace BlogTalks.API.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        // GET api/<Comments>/5
+        [HttpGet("/api/BlogPosts/{blogPostId}/comments")]
+        public ActionResult GetByBlogpostId([FromRoute] int blogPostId)
+        {
+            var request = new GetByBlogPostIdRequest(blogPostId);
+            var response = _mediator.Send(request);
+            return Ok(response);
         }
     }
 }
