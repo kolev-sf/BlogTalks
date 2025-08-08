@@ -23,8 +23,10 @@ public static class DependencyInjection
 
         //services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<ApplicationDbContext>();
+
         services.AddTransient<IBlogPostRepository, BlogPostRepository>();
         services.AddTransient<ICommentRepository, CommentRepository>();
+        services.AddTransient<IUserRepository, UserRepository>();
 
         return services;
     }
