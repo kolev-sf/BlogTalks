@@ -11,6 +11,8 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
 
     public DbSet<Comment> Comments { get; set; }
 
+    public DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<BlogPost>().HasKey(e => e.Id);
@@ -21,6 +23,8 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
             .IsRequired();
 
         modelBuilder.Entity<Comment>().HasKey(e => e.Id);
+
+        modelBuilder.Entity<User>().HasKey(e => e.Id);
 
         base.OnModelCreating(modelBuilder);
     }

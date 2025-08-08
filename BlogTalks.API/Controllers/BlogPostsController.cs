@@ -5,61 +5,60 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace BlogTalks.API.Controllers
+namespace BlogTalks.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class BlogPostsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BlogPostsController : ControllerBase
+    private readonly IMediator _mediator;
+
+    public BlogPostsController(IMediator mediator)
     {
-        private readonly IMediator _mediator;
+        _mediator = mediator;
+    }
 
-        public BlogPostsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+    // GET: api/<BlogPosts>
+    [HttpGet]
+    public ActionResult<List<GetAllResponse>> Get()
+    {
+        var list = _mediator.Send(new GetAllRequest());
+        return Ok(list);
+    }
 
-        // GET: api/<BlogPosts>
-        [HttpGet]
-        public ActionResult<List<GetAllResponse>> Get()
+    // GET api/<BlogPosts>/5
+    [HttpGet("{id}")]
+    public ActionResult Get([FromRoute] int id)
+    {
+        var response = _mediator.Send(new GetByIdRequest { Id = id });
+        if (response == null)
         {
-            var list = _mediator.Send(new GetAllRequest());
-            return Ok(list);
+            return NotFound();
         }
+        return Ok(response);
+    }
 
-        // GET api/<BlogPosts>/5
-        [HttpGet("{id}")]
-        public ActionResult Get([FromRoute] int id)
+    // POST api/<BlogPosts>
+    [HttpPost]
+    public async Task<ActionResult> PostAsync([FromBody] CreateRequest request)
+    {
+        var response = await _mediator.Send(request);
+        if(response == null)
         {
-            var response = _mediator.Send(new GetByIdRequest { Id = id });
-            if (response == null)
-            {
-                return NotFound();
-            }
-            return Ok(response);
+            return NotFound();
         }
+        return Ok(response.Id);
+    }
 
-        // POST api/<BlogPosts>
-        [HttpPost]
-        public async Task<ActionResult> PostAsync([FromBody] CreateRequest request)
-        {
-            var response = await _mediator.Send(request);
-            if(response == null)
-            {
-                return NotFound();
-            }
-            return Ok(response.Id);
-        }
+    // PUT api/<BlogPosts>/5
+    [HttpPut("{id}")]
+    public void Put(int id, [FromBody] string value)
+    {
+    }
 
-        // PUT api/<BlogPosts>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<BlogPosts>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+    // DELETE api/<BlogPosts>/5
+    [HttpDelete("{id}")]
+    public void Delete(int id)
+    {
     }
 }
