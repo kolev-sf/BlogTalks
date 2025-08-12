@@ -1,4 +1,6 @@
-﻿using BlogTalks.Domain.Repositories;
+﻿using BlogTalks.Application.Abstractions;
+using BlogTalks.Domain.Repositories;
+using BlogTalks.Domain.Shared;
 using MediatR;
 
 namespace BlogTalks.Application.User.Commands;
@@ -6,23 +8,29 @@ namespace BlogTalks.Application.User.Commands;
 public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IAuthService _authService;
 
-    public LoginHandler(IUserRepository userRepository)
+    public LoginHandler(IUserRepository userRepository, IAuthService authService)
     {
         _userRepository = userRepository;
+        _authService = authService;
     }
 
     public async Task<LoginResponse> Handle(LoginRequest request, CancellationToken cancellationToken)
     {
-        var user = _userRepository.Login(request.Username, request.Password);
+        var user = _userRepository.GetByUsername(request.Username);
         if (user == null)
         {
-            // Handle the case where registration fails, e.g., user already exists
-            //throw new InvalidOperationException("User login failed.");
             return null;
         }
 
-        // return Id of created Comment Entity
-        return new LoginResponse("", "", user.Id);
+        var passwordConfirmed = PasswordHasher.VerifyPassword(request.Password, user.Password);
+        if (!passwordConfirmed)
+        {
+            return null;
+        }
+
+        var token = _authService.CreateToken(user.Id, user.Name, user.Username, new List<string>());
+        return new LoginResponse(token, "", user.Id);
     }
 }
