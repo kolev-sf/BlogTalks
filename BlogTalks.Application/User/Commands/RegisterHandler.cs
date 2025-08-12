@@ -1,4 +1,6 @@
-﻿using BlogTalks.Domain.Repositories;
+﻿using System.Reflection.Metadata.Ecma335;
+using BlogTalks.Domain.Repositories;
+using BlogTalks.Domain.Shared;
 using MediatR;
 
 namespace BlogTalks.Application.User.Commands;
@@ -14,13 +16,24 @@ public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse
 
     public async Task<RegisterResponse> Handle(RegisterRequest request, CancellationToken cancellationToken)
     {
-        var user = _userRepository.Register(request.Username, request.Password, request.Name);
-        if (user == null) {
-            // Handle the case where registration fails, e.g., user already exists
-            throw new InvalidOperationException("User registration failed.");
+        // Check if the user already exists
+        var existingUser = _userRepository.GetByUsername(request.Username);
+        if (existingUser != null)
+        {
+            return null;
         }
 
-        // return Id of created Comment Entity
+        var user = new Domain.Entities.User
+        {
+            Username = request.Username,
+            Password = PasswordHasher.HashPassword(request.Password),
+            Name = request.Name,
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = 0 // registered by system or admin, adjust as needed
+        };
+
+        _userRepository.Add(user);
+
         return new RegisterResponse(user.Id);
     }
 }

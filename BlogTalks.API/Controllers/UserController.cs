@@ -1,12 +1,13 @@
-﻿
-using BlogTalks.Application.User.Commands;
+﻿using BlogTalks.Application.User.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogTalks.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class UserController(IMediator mediator) : ControllerBase
 {
     //// GET: api/<BlogPosts>
@@ -31,36 +32,35 @@ public class UserController(IMediator mediator) : ControllerBase
 
     // POST api/<BlogPosts>
     [HttpPost("/register")]
+    [AllowAnonymous]
     public async Task<ActionResult> Register([FromBody] RegisterRequest request)
     {
         var response = await mediator.Send(request);
         if (response == null)
         {
-            return NotFound();
+            return Forbid();
         }
-        return Ok(response.Id);
+        return Ok(response);
     }
 
-    // POST api/<BlogPosts>
     [HttpPost("/login")]
+    [AllowAnonymous]
     public async Task<ActionResult> Login([FromBody] LoginRequest request)
     {
         var response = await mediator.Send(request);
         if (response == null)
         {
-            return NotFound();
+            return Unauthorized("Username and password does not match");
         }
         return Ok(response);
     }
 
 
-    // PUT api/<BlogPosts>/5
     [HttpPut("{id}")]
     public void Put(int id, [FromBody] string value)
     {
     }
 
-    // DELETE api/<BlogPosts>/5
     [HttpDelete("{id}")]
     public void Delete(int id)
     {

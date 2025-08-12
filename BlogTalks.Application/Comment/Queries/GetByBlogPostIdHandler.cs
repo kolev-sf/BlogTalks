@@ -1,8 +1,7 @@
-﻿using BlogTalks.Application.Comment.Queries;
-using BlogTalks.Domain.Repositories;
+﻿using BlogTalks.Domain.Repositories;
 using MediatR;
 
-namespace BlogTalks.Application.BlogPost.Queries;
+namespace BlogTalks.Application.Comment.Queries;
 
 public class GetByBlogPostIdHandler : IRequestHandler<GetByBlogPostIdRequest, List<GetByBlogPostIdResponse>>
 {
@@ -18,12 +17,11 @@ public class GetByBlogPostIdHandler : IRequestHandler<GetByBlogPostIdRequest, Li
     public async Task<List<GetByBlogPostIdResponse>> Handle(GetByBlogPostIdRequest request, CancellationToken cancellationToken)
     {
         // get list of BlogPostEntities
-        var blogPost = _blogPostRepository.GetById(request.blogPostId);
+        var blogPost = _blogPostRepository.GetById(request.BlogPostId);
         if (blogPost == null)
             return null;
 
-
-        var list = _commentRepository.GetCommentsByBlogPostId(request.blogPostId);
+        var list = _commentRepository.GetCommentsByBlogPostId(request.BlogPostId);
 
         // map list to GetAllResponse
         var getAllResponseList = new List<GetByBlogPostIdResponse>();

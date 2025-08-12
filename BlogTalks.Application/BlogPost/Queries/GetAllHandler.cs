@@ -27,7 +27,7 @@ public class GetAllHandler : IRequestHandler<GetAllRequest, List<GetAllResponse>
                 Title = item.Title,
                 Text = item.Text,
                 Tags = item.Tags,
-                CreatorName = "XXX" // not implemted yet, TODO
+                CreatorName = $"user with id {item.Id}" // not implemented yet, TODO
             };
             getAllResponseList.Add(response);
         }
