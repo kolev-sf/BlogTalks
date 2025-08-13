@@ -1,6 +1,8 @@
 using BlogTalks.API;
+using BlogTalks.API.Middlewares;
 using BlogTalks.Application;
-using BlogTalks.Infrastructure; // Ensure this namespace is included
+using BlogTalks.Infrastructure;
+using Serilog; // Ensure this namespace is included
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug()
+    .WriteTo.Console()
+    .WriteTo.File(@"c:\logs\myapp.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddOpenApi();
 
@@ -27,6 +37,8 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/openapi/v1.json", "v1");
     });
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
