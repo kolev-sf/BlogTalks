@@ -1,5 +1,7 @@
-﻿using BlogTalks.Domain.Repositories;
+﻿using BlogTalks.Domain.Exceptions;
+using BlogTalks.Domain.Repositories;
 using MediatR;
+using System.Net;
 
 namespace BlogTalks.Application.BlogPost.Queries;
 
@@ -14,20 +16,17 @@ public class GetByIdHandler : IRequestHandler<GetByIdRequest, GetByIdResponse>
 
     public async Task<GetByIdResponse> Handle(GetByIdRequest request, CancellationToken cancellationToken)
     {
-        // get by Id of BlogPostEntities
-        //.. (this part is usually done by a repository or a service)
         var blogPost = _blogPostRepository.GetById(request.Id);
+        if (blogPost == null)
+            throw new BlogTalksException($"Blog post with Id {request.Id} not found.", HttpStatusCode.NotFound);
 
-        // map list to GetAllResponse
-        var response = new GetByIdResponse
+        return new GetByIdResponse
         {
             Id = blogPost.Id,
             Title = blogPost.Title,
             Text = blogPost.Text,
             CreatorName = "Mile Milevski", //not implemeted yet TODO
-            Tags = blogPost.Tags            
+            Tags = blogPost.Tags
         };
-
-        return response;
     }
 }

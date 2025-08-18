@@ -5,17 +5,17 @@ namespace BlogTalks.Application.User.Queries;
 
 public class GetAllHandler : IRequestHandler<GetAllRequest, List<GetAllResponse>>
 {
-    private readonly IBlogPostRepository _blogPostRepository;
+    private readonly IUserRepository _userRepository;
 
-    public GetAllHandler(IBlogPostRepository blogPostRepository)
+    public GetAllHandler(IUserRepository userRepository)
     {
-        _blogPostRepository = blogPostRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<List<GetAllResponse>> Handle(GetAllRequest request, CancellationToken cancellationToken)
     {
         // get list of BlogPostEntities
-        var list = _blogPostRepository.GetAll();
+        var list = _userRepository.GetAll();
 
         // map list to GetAllResponse
         var getAllResponseList = new List<GetAllResponse>();
@@ -24,10 +24,8 @@ public class GetAllHandler : IRequestHandler<GetAllRequest, List<GetAllResponse>
             var response = new GetAllResponse
             {
                 Id = item.Id,
-                Title = item.Title,
-                Text = item.Text,
-                Tags = item.Tags,
-                CreatorName = "XXX" // not implemted yet, TODO
+                Name = item.Name,
+                Username = item.Username
             };
             getAllResponseList.Add(response);
         }

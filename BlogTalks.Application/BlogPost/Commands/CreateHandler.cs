@@ -19,11 +19,6 @@ public class CreateHandler : IRequestHandler<CreateRequest, CreateResponse>
     public async Task<CreateResponse> Handle(CreateRequest request, CancellationToken cancellationToken)
     {
         var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (userId == null)
-        {
-            throw null;
-        }
-
         var blogPost = new Domain.Entities.BlogPost
         {
             Title = request.Title,
