@@ -12,4 +12,9 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     {
         return _dbSet.FirstOrDefault(x => x.Username.Equals(username));
     }
+
+    public IEnumerable<User> GetUsersByIds(IEnumerable<int> ids)
+    {
+        return _dbSet.Where(u => ids.Contains(u.Id));
+    }
 }

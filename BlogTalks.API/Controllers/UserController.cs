@@ -19,10 +19,6 @@ public class UserController(IMediator mediator, ILogger<UserController> logger) 
         _logger.LogInformation("------- Register request received.");
 
         var response = await mediator.Send(request);
-        if (response == null)
-        {
-            return Forbid();
-        }
         return Ok(response);
     }
 
@@ -31,10 +27,6 @@ public class UserController(IMediator mediator, ILogger<UserController> logger) 
     public async Task<ActionResult> Login([FromBody] LoginRequest request)
     {
         var response = await mediator.Send(request);
-        if (response == null)
-        {
-            return Unauthorized("Username and password does not match");
-        }
         return Ok(response);
     }
 

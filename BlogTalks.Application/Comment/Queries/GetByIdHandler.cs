@@ -1,27 +1,29 @@
-﻿using MediatR;
+﻿using BlogTalks.Domain.Repositories;
+using MediatR;
 
-using BlogTalks.Application.Comment.Queries;
+namespace BlogTalks.Application.Comment.Queries;
 
 public class GetByIdHandler : IRequestHandler<GetByIdRequest, GetByIdResponse>
 {
-    public GetByIdHandler()
+    private readonly ICommentRepository _commentRepository;
+
+    public GetByIdHandler(ICommentRepository commentRepository)
     {
+        _commentRepository = commentRepository;
     }
 
     public async Task<GetByIdResponse> Handle(GetByIdRequest request, CancellationToken cancellationToken)
     {
-        // get by Id of BlogPostEntities
-        //.. (this part is usually done by a repository or a service)
+        var comment = _commentRepository.GetById(request.Id);
+        if (comment == null)
+            throw new KeyNotFoundException($"Comment with ID {request.Id} not found.");
 
-        // map list to GetAllResponse
-        var response = new GetByIdResponse
+        return new GetByIdResponse
         {
-            Id = 1,
-            Text = "This is a sample blog post text.",
-            CreatedAt = DateTime.UtcNow,
-            CreatedBy = 123, // Example user ID
+            Id = comment.Id,
+            Text = comment.Text,
+            CreatedBy = comment.CreatedBy,
+            CreatedAt = comment.CreatedAt
         };
-
-        return response;
     }
 }

@@ -1,7 +1,9 @@
 ﻿using BlogTalks.Application.Abstractions;
+using BlogTalks.Domain.Exceptions;
 using BlogTalks.Domain.Repositories;
 using BlogTalks.Domain.Shared;
 using MediatR;
+using System.Net;
 
 namespace BlogTalks.Application.User.Commands;
 
@@ -20,15 +22,11 @@ public class LoginHandler : IRequestHandler<LoginRequest, LoginResponse>
     {
         var user = _userRepository.GetByUsername(request.Username);
         if (user == null)
-        {
-            return null;
-        }
+            throw new BlogTalksException("User and password does not match.", HttpStatusCode.NotFound);
 
         var passwordConfirmed = PasswordHasher.VerifyPassword(request.Password, user.Password);
         if (!passwordConfirmed)
-        {
-            return null;
-        }
+            throw new BlogTalksException("User and password does not match.", HttpStatusCode.NotFound);
 
         var token = _authService.CreateToken(user.Id, user.Name, user.Username, new List<string>());
         return new LoginResponse(token, "", user.Id);

@@ -1,31 +1,31 @@
-﻿using BlogTalks.Domain.Repositories;
+﻿using BlogTalks.Domain.Exceptions;
+using BlogTalks.Domain.Repositories;
 using MediatR;
+using System.Net;
 
 namespace BlogTalks.Application.User.Queries;
 
 public class GetByIdHandler : IRequestHandler<GetByIdRequest, GetByIdResponse>
 {
-    private readonly IBlogPostRepository _blogPostRepository;
+    private readonly IUserRepository _userRepository;
 
-    public GetByIdHandler(IBlogPostRepository blogPostRepository)
+    public GetByIdHandler(IUserRepository userRepository)
     {
-        _blogPostRepository = blogPostRepository;
+        _userRepository = userRepository;
     }
 
     public async Task<GetByIdResponse> Handle(GetByIdRequest request, CancellationToken cancellationToken)
     {
-        // get by Id of BlogPostEntities
-        //.. (this part is usually done by a repository or a service)
-        var blogPost = _blogPostRepository.GetById(request.Id);
+        var user = _userRepository.GetById(request.Id);
+        if (user == null)
+            throw new BlogTalksException($"User with ID {request.Id} not found.", HttpStatusCode.NotFound);
 
         // map list to GetAllResponse
         var response = new GetByIdResponse
         {
-            Id = blogPost.Id,
-            Title = blogPost.Title,
-            Text = blogPost.Text,
-            CreatorName = "Mile Milevski", //not implemeted yet TODO
-            Tags = blogPost.Tags            
+            Id = user.Id,
+            Name = user.Name,
+            Username = user.Username
         };
 
         return response;

@@ -1,7 +1,9 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using BlogTalks.Domain.Exceptions;
 using BlogTalks.Domain.Repositories;
 using BlogTalks.Domain.Shared;
 using MediatR;
+using System.Net;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BlogTalks.Application.User.Commands;
 
@@ -19,9 +21,7 @@ public class RegisterHandler : IRequestHandler<RegisterRequest, RegisterResponse
         // Check if the user already exists
         var existingUser = _userRepository.GetByUsername(request.Username);
         if (existingUser != null)
-        {
-            return null;
-        }
+            throw new BlogTalksException("User exist.", HttpStatusCode.BadRequest);
 
         var user = new Domain.Entities.User
         {

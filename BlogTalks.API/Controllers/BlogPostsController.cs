@@ -20,9 +20,9 @@ public class BlogPostsController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    public ActionResult<List<GetAllResponse>> Get()
+    public ActionResult<List<GetAllResponse>> Get([FromQuery] GetAllRequest request)
     {
-        var list = _mediator.Send(new GetAllRequest());
+        var list = _mediator.Send(request);
         return Ok(list);
     }
 
@@ -30,10 +30,6 @@ public class BlogPostsController : ControllerBase
     public ActionResult Get([FromRoute] int id)
     {
         var response = _mediator.Send(new GetByIdRequest { Id = id });
-        if (response == null)
-        {
-            return NotFound();
-        }
         return Ok(response);
     }
 
@@ -41,10 +37,6 @@ public class BlogPostsController : ControllerBase
     public async Task<ActionResult> PostAsync([FromBody] CreateRequest request)
     {
         var response = await _mediator.Send(request);
-        if(response == null)
-        {
-            return BadRequest("User not authorized");
-        }
         return Ok(response);
     }
 

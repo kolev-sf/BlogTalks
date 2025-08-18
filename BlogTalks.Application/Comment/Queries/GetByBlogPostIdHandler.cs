@@ -1,5 +1,7 @@
-﻿using BlogTalks.Domain.Repositories;
+﻿using BlogTalks.Domain.Exceptions;
+using BlogTalks.Domain.Repositories;
 using MediatR;
+using System.Net;
 
 namespace BlogTalks.Application.Comment.Queries;
 
@@ -19,7 +21,7 @@ public class GetByBlogPostIdHandler : IRequestHandler<GetByBlogPostIdRequest, Li
         // get list of BlogPostEntities
         var blogPost = _blogPostRepository.GetById(request.BlogPostId);
         if (blogPost == null)
-            return null;
+            throw new BlogTalksException($"Blog post with Id {request.BlogPostId} not found.", HttpStatusCode.NotFound);
 
         var list = _commentRepository.GetCommentsByBlogPostId(request.BlogPostId);
 

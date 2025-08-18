@@ -1,3 +1,6 @@
 ﻿namespace BlogTalks.Application.Comment.Commands;
 
-public record CreateResponse(int Id);
+public class CreateResponse
+{
+    public int Id { get; set; }
+}

@@ -22,10 +22,6 @@ public class CommentsController : ControllerBase
     public ActionResult Get([FromRoute] int id)
     {
         var response = _mediator.Send(new GetByIdRequest { Id = id });
-        if (response == null)
-        {
-            return NotFound();
-        }
         return Ok(response);
     }
 
@@ -33,10 +29,6 @@ public class CommentsController : ControllerBase
     public async Task<ActionResult> PostAsync([FromBody] CreateRequest request)
     {
         var response = await _mediator.Send(request);
-        if (response == null)
-        {
-            return BadRequest("BlogPost not found");
-        }
         return Ok(response);
     }
 
@@ -54,10 +46,6 @@ public class CommentsController : ControllerBase
     public ActionResult GetByBlogPostId([FromRoute] int blogPostId)
     {
         var response = _mediator.Send(new GetByBlogPostIdRequest(blogPostId));
-        if (response == null)
-        {
-            return NotFound();
-        }
         return Ok(response);
     }
 
