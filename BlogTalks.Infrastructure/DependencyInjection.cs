@@ -1,5 +1,7 @@
-﻿using BlogTalks.Domain.Repositories;
+﻿using BlogTalks.Application.Abstractions;
+using BlogTalks.Domain.Repositories;
 using BlogTalks.Infrastructure.Authentication;
+using BlogTalks.Infrastructure.Messaging;
 using BlogTalks.Infrastructure.Repositories;
 using Infrastructure.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using BlogTalks.Application.Abstractions;
+using Microsoft.FeatureManagement;
 
 namespace BlogTalks.Infrastructure;
 
@@ -23,7 +25,17 @@ public static class DependencyInjection
 
         AddAuthentication(services, configuration);
 
+        AddServices(services, configuration);
+
         return services;
+    }
+
+    private static void AddServices(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddKeyedTransient<IEmailService, EmailHttpService>("EmailHttpService");
+        services.AddKeyedTransient<IEmailService, EmailBusEService>("EmailBusEService");
+
+        services.AddFeatureManagement(configuration.GetSection("FeatureManagement"));
     }
 
     private static void AddAuthentication(IServiceCollection services, IConfiguration configuration)
