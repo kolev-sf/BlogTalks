@@ -1,9 +1,11 @@
-﻿using System.Security.Claims;
+﻿
 using BlogTalks.Application.BlogPost.Commands;
 using BlogTalks.Domain.Entities;
 using BlogTalks.Domain.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Moq;
+using System.Security.Claims;
 using Xunit;
 
 namespace BlogTalks.Tests.UnitTests.BlogPosts;
@@ -13,12 +15,14 @@ public class CreateHandlerTests
     private readonly Mock<IBlogPostRepository> _blogPostRepositoryMock;
     private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
     private readonly CreateHandler _handler;
+    private readonly Mock<ILogger<CreateHandler>> _loggerMock;
 
     public CreateHandlerTests()
     {
+        _loggerMock = new Mock<ILogger<CreateHandler>>();
         _blogPostRepositoryMock = new Mock<IBlogPostRepository>();
         _httpContextAccessorMock = new Mock<IHttpContextAccessor>();
-        _handler = new CreateHandler(_blogPostRepositoryMock.Object, _httpContextAccessorMock.Object);
+        _handler = new CreateHandler(_blogPostRepositoryMock.Object, _httpContextAccessorMock.Object, _loggerMock.Object);
     }
 
     [Fact]
