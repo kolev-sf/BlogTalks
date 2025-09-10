@@ -1,6 +1,8 @@
-﻿using BlogTalks.Domain.Repositories;
+﻿using BlogTalks.Domain.Exceptions;
+using BlogTalks.Domain.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace BlogTalks.Application.Comment.Queries;
 
@@ -21,7 +23,7 @@ public class GetByIdHandler : IRequestHandler<GetByIdRequest, GetByIdResponse>
 
         var comment = _commentRepository.GetById(request.Id);
         if (comment == null)
-            throw new KeyNotFoundException($"Comment with ID {request.Id} not found.");
+            throw new BlogTalksException($"Comment with Id {request.Id} not found.", HttpStatusCode.NotFound);
 
         return new GetByIdResponse
         {

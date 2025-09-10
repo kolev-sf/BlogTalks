@@ -33,13 +33,15 @@ public class CommentsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    public OkResult Put(int id, [FromBody] object value)
     {
+        return Ok();
     }
 
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public OkResult Delete(int id)
     {
+        return Ok();
     }
 
     [HttpGet("/blogPosts/{blogPostId}/comments")]
